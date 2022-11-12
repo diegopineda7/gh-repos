@@ -1,53 +1,74 @@
-import {
-  BrowserRouter,
-  NavLink,
-  Route,
-  Routes,
-  Navigate,
-} from 'react-router-dom';
+import { Routes, Route, NavLink, Navigate } from 'react-router-dom';
+import { SignUpPage, ReposPage, LogInPage } from '../pages';
 import logo from '../logo.svg';
 
+// Hooks
+import useLocalStorage from '../hooks/useLocalStorage';
+
 const Navigation = () => {
+  const { isLoggedIn, logOut } = useLocalStorage();
+
   return (
-    <BrowserRouter>
-      <div className="main-layout">
-        <nav>
-          <img src={logo} alt="Logo" />
-          <ul>
-            <li>
-              <NavLink
-                to="/signup"
-                className={({ isActive }) => (isActive ? 'nav-active' : '')}
-              >
-                Sign Up
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/login"
-                className={({ isActive }) => (isActive ? 'nav-active' : '')}
-              >
-                Log In
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) => (isActive ? 'nav-active' : '')}
-              >
-                Repos
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
-        <Routes>
-          <Route path="/signup" element={<h1>Sign Up</h1>}></Route>
-          <Route path="/login" element={<h1>Log In</h1>}></Route>
-          <Route path="/" element={<h1>Repos</h1>}></Route>
-          <Route path="/*" element={<Navigate to="/" replace />}></Route>
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <div className="main-layout">
+      <nav>
+        <img src={logo} alt="React Logo" />
+        <ul>
+          {!isLoggedIn && (
+            <>
+              <li>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) => (isActive ? 'nav-active' : '')}
+                >
+                  Sign up
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) => (isActive ? 'nav-active' : '')}
+                >
+                  Log in
+                </NavLink>
+              </li>
+            </>
+          )}
+          {isLoggedIn && (
+            <>
+              <li>
+                <NavLink
+                  to="/repos"
+                  className={({ isActive }) => (isActive ? 'nav-active' : '')}
+                >
+                  Repos
+                </NavLink>
+              </li>
+              <li>
+                <label onClick={logOut}>Log out</label>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
+
+      <Routes>
+        {!isLoggedIn && (
+          <>
+            <Route path="/" element={<SignUpPage />} />
+            <Route path="/login" element={<LogInPage />} />
+          </>
+        )}
+        {isLoggedIn && (
+          <>
+            <Route path="/repos" element={<ReposPage />} />
+          </>
+        )}
+        <Route
+          path="/*"
+          element={<Navigate to={isLoggedIn ? '/repos' : '/'} replace />}
+        />
+      </Routes>
+    </div>
   );
 };
 
