@@ -28,8 +28,6 @@ export interface Viewer {
 }
 
 export interface Repositories {
-  totalCount: number;
-  pageInfo: PageInfo;
   nodes: Repo[];
 }
 
@@ -39,11 +37,6 @@ export interface Repo {
   url: string;
   primaryLanguage: PrimaryLanguage;
   visibility: string;
-}
-
-export interface PageInfo {
-  endCursor: string;
-  hasNextPage: boolean;
 }
 
 export interface PrimaryLanguage {

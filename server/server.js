@@ -51,18 +51,13 @@ app.get("/getRepos", async (req, res) => {
     query: `query {
       viewer {
       repositories(first: 100, affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER]) {
-        totalCount
-        pageInfo {
-          endCursor
-          hasNextPage
-        }
         nodes{
           id
           name
             name
             url
             primaryLanguage {
-                name
+              name
             }
             visibility
           }

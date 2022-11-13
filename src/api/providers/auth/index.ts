@@ -3,12 +3,11 @@ import { UserResponse } from '../../../interfaces';
 
 const useAuthProviders = () => {
   const getAccessToken = ({ code }: { code: string }) => {
-    const response = axios({
+    return axios({
       method: 'GET',
       url: 'http://localhost:4000/getAccessToken',
       params: { code },
     });
-    return response;
   };
 
   const getUserData = async ({ token }: { token: string }) => {

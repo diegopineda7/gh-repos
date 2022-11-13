@@ -75,7 +75,7 @@ const useAuth = () => {
       navigate('/repos');
     } else {
       setUserError(
-        "Invalid credentials. If you haven't registered yet, plase Sign up "
+        "Username not found. If you haven't registered yet, please Sign up "
       );
     }
   };

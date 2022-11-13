@@ -6,14 +6,13 @@ import { CustomTextInput } from '../components';
 
 // Hooks
 import useAuth from '../hooks/useAuth';
+import { REQUIRED_FIELD } from '../constants';
 
 export const LogInPage = () => {
   const { userError, validateUser } = useAuth();
 
   const validationSchema = Yup.object({
-    username: Yup.string()
-      .max(15, 'Debe de tener 15 caracteres o menos')
-      .required('Requerido'),
+    username: Yup.string().required(REQUIRED_FIELD),
   });
 
   return (
