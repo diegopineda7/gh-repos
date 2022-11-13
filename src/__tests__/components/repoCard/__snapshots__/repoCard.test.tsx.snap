@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test component RepoCard render component <RepoCard /> 1`] = `
+<div
+  className="repo-card"
+>
+  <div
+    className="repo-card-header"
+  >
+    <a
+      href="url"
+      rel="noreferrer"
+      target="_blank"
+    >
+      Repo Test
+    </a>
+    <img
+      alt="Mark as favorite"
+      onClick={[Function]}
+      src={{}}
+      title="Mark as favorite"
+      width={30}
+    />
+  </div>
+  <div
+    className="repo-card-footer"
+  >
+    <p>
+      lang
+    </p>
+    <p>
+      PRIVATE
+    </p>
+  </div>
+</div>
+`;

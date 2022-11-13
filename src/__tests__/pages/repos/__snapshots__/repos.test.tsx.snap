@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Repos page render component <Repos /> 1`] = `
+<div>
+  <h1>
+    My repos
+  </h1>
+  <div
+    className="repos-container"
+  >
+    <p>
+      You have no 
+       repos
+       
+       
+    </p>
+  </div>
+</div>
+`;

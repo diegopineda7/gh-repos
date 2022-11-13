@@ -1,4 +1,3 @@
-import { trackPromise } from 'react-promise-tracker';
 import axios from 'axios';
 import { UserResponse } from '../../../interfaces';
 
@@ -9,7 +8,7 @@ const useAuthProviders = () => {
       url: 'http://localhost:4000/getAccessToken',
       params: { code },
     });
-    return trackPromise(response);
+    return response;
   };
 
   const getUserData = async ({ token }: { token: string }) => {
