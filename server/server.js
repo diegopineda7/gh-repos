@@ -24,11 +24,59 @@ app.get("/getAccessToken", async (req, res) => {
 });
 
 app.get("/getUserData", async (req, res) => {
-  await fetch("https://api.github.com/user", {
-    method: "GET",
+  const body = {
+    query: `query {
+      viewer {
+        name
+        login
+        avatarUrl
+        url
+      }
+    }`,
+  };
+  await fetch("https://api.github.com/graphql", {
+    method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Authorization: req.get("Authorization"),
     },
+    body: JSON.stringify(body),
+  })
+    .then((res) => res.json())
+    .then((data) => res.json(data));
+});
+
+app.get("/getRepos", async (req, res) => {
+  const body = {
+    query: `query {
+      viewer {
+      repositories(first: 100, affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER]) {
+        totalCount
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        nodes{
+          id
+          name
+            name
+            url
+            primaryLanguage {
+                name
+            }
+            visibility
+          }
+        }
+     }
+    }`,
+  };
+  await fetch("https://api.github.com/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: req.get("Authorization"),
+    },
+    body: JSON.stringify(body),
   })
     .then((res) => res.json())
     .then((data) => res.json(data));

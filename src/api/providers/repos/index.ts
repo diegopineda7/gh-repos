@@ -1,18 +1,17 @@
 import axios from 'axios';
-import { trackPromise } from 'react-promise-tracker';
-import { Repo } from '../../../interfaces';
+import { ReposResponse } from '../../../interfaces';
 import { ACCESS_TOKEN_KEY } from '../../../constants';
 
 const useReposProviders = () => {
-  const getRepos = () => {
-    const response = axios<Repo[]>({
+  const getRepos = async () => {
+    const response = await axios<ReposResponse>({
       method: 'GET',
-      url: `https://api.github.com/user/repos`,
+      url: 'http://localhost:4000/getRepos',
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN_KEY)}`,
       },
     });
-    return trackPromise(response);
+    return response.data.data.viewer.repositories.nodes;
   };
 
   return {

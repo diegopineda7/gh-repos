@@ -1,4 +1,4 @@
-html, body {
+html,body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -9,18 +9,25 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a, button {
+  cursor: pointer;
+}
+
 .main-layout {
   display: flex;
   flex-direction: row;
 }
 
+.container {
+  margin-left: 270px;
+}
+
 nav {
   background-color: #363a45;
-  height: 100vh;
-  margin-right: 15px;
-  overflow-y: scroll;
+  min-height: 100vh;
   text-align: center;
   width: 250px;
+  position: fixed;
 }
 
 nav ul {
@@ -29,6 +36,7 @@ nav ul {
   flex-direction: column;
   justify-content: center;
   padding-left: 0;
+  margin-top: 30px;
 }
 
 nav li {
@@ -37,24 +45,159 @@ nav li {
 }
 
 nav li a, nav li label {
-  color: white;
+  color: #a8a1a1;
   font-size: 1.2rem;
   text-decoration: none;
+  cursor: pointer;
+}
+
+nav img {
+  width: 200px;
+  border-radius: 100px;
+  margin-top: 20px;
+  transition: all .3s;
+}
+
+nav .profile img:hover {
+  opacity: 0.7;
+}
+
+.profile {
+  margin: 10px;
+  border-bottom: 1px solid white;
 }
 
 .nav-active {
-  color: grey;
+  color: #fff;
   transition: all .3s ease-out;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+input {
+  margin-top: 5px;
+  outline: none;
+  padding: 10px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px;
+  transition: all .3s;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+span, .error-message {
+  color: red;
 }
 
 .text-input-container {
   display: flex;
   flex-direction: column;
-  height: 100px;
+  height: 80px;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 80px;
+  width: 400px;
+}
+
+.search-container p {
+  position: relative;
+  right: 20px;
+  color: #000;
+  z-index: 99;
+  cursor: pointer;
+}
+
+.search-input {
+  flex: 1;
 }
 
 .text-input, button {
-  border-radius: 20px;
+  border-radius: 15px;
 }
 
-.input-error { border: 1px solid red;}
+.input-error {
+  border: 1px solid red;
+}
+
+.repos-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.tabs-container {
+  display: flex;
+}
+
+.tab {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  width: 120px;
+  padding: 15px;
+  cursor: pointer;
+  color: #a8a1a1;
+}
+
+.tab-active {
+  border-bottom: 3px solid #fff;
+  color: #fff;
+}
+
+.repo-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  border: 2px solid white;
+  padding: 15px 15px 0 15px;
+  margin: 10px;
+  height: 110px;
+  flex: 1 1 150px;
+  justify-content: space-between;
+}
+
+.repo-card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.repo-card-header a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  max-width: 60%;
+  margin-right: 10px;
+}
+
+.repo-card-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.repo-card-footer p {
+  background-color: #dac6c6;
+  color: #000;
+  border-radius: 5px;
+  padding: 1px 3px;
+  font-size: 12px;
+}

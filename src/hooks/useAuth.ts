@@ -8,7 +8,7 @@ import {
 import { Credentials, User } from '../interfaces';
 import useApi from '../api';
 
-const useLocalStorage = () => {
+const useAuth = () => {
   const navigate = useNavigate();
   const [userError, setUserError] = useState<string>();
   const isLoggedIn = localStorage.getItem(ACCESS_TOKEN_KEY);
@@ -29,61 +29,60 @@ const useLocalStorage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
-  const registerUser = async () => {
-    if (code && !localStorage.getItem(ACCESS_TOKEN_KEY)) {
-      const { data } = await getAccessToken({ code });
-      if (data.access_token) {
-        const { data: profileData } = await getUserData({
-          token: data.access_token,
-        });
-        if (usersList) {
-          const userExists = users.find((u) => u.login === profileData.login);
-          if (userExists) {
-            setUserError('This user is already registered, please Log In');
-          } else {
-            const newUsersList = [
-              ...JSON.parse(usersList),
-              { ...profileData, favorites: [] },
-            ];
-            localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
-            localStorage.setItem(USERS_LIST_KEY, JSON.stringify(newUsersList));
-            localStorage.setItem(
-              LOGGED_IN_USER_KEY,
-              JSON.stringify({ ...profileData, favorites: [] })
-            );
-            navigate('/repos');
-          }
-        } else {
-          localStorage.setItem(USERS_LIST_KEY, JSON.stringify([profileData]));
-          navigate('/repos');
-        }
-      }
-    }
-  };
-
   const askForAccess = async () => {
     window.location.assign(
       `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=repo`
     );
   };
 
+  const registerUser = async () => {
+    if (code && !localStorage.getItem(ACCESS_TOKEN_KEY)) {
+      const { data } = await getAccessToken({ code });
+      if (data.access_token) {
+        const { viewer: profileData } = await getUserData({
+          token: data.access_token,
+        });
+        const newUser = {
+          ...profileData,
+          token: data.access_token,
+          favorites: [],
+        };
+        const userExists = users.find((u) => u.login === newUser.login);
+        if (userExists) {
+          setUserError(
+            `The user @${userExists.login} is already registered, please Log In`
+          );
+        } else {
+          const newUsersList = usersList
+            ? [...JSON.parse(usersList), newUser]
+            : [newUser];
+          localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
+          localStorage.setItem(USERS_LIST_KEY, JSON.stringify(newUsersList));
+          localStorage.setItem(LOGGED_IN_USER_KEY, JSON.stringify(newUser));
+          navigate('/repos');
+        }
+      }
+    }
+  };
+
   const validateUser = (credentials: Credentials) => {
     setUserError('');
 
-    if (usersList) {
-      const users: User[] = JSON.parse(usersList);
-      const userFound = users.find((u) => u.login === credentials.username);
-      if (userFound) {
-        localStorage.setItem(LOGGED_IN_USER_KEY, JSON.stringify(userFound));
-        navigate('/repos');
-      } else {
-        setUserError('Invalid credentials');
-      }
-    } else setUserError('Invalid credentials');
+    const userFound = users.find((u) => u.login === credentials.username);
+    if (userFound) {
+      localStorage.setItem(ACCESS_TOKEN_KEY, userFound.token);
+      localStorage.setItem(LOGGED_IN_USER_KEY, JSON.stringify(userFound));
+      navigate('/repos');
+    } else {
+      setUserError(
+        "Invalid credentials. If you haven't registered yet, plase Sign up "
+      );
+    }
   };
 
   const logOut = () => {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
+    localStorage.removeItem(LOGGED_IN_USER_KEY);
     navigate('/');
   };
 
@@ -98,4 +97,4 @@ const useLocalStorage = () => {
   };
 };
 
-export default useLocalStorage;
+export default useAuth;

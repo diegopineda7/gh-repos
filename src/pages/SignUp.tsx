@@ -1,15 +1,18 @@
 // Hooks
-import useLocalStorage from '../hooks/useLocalStorage';
+import useAuth from '../hooks/useAuth';
 
 export const SignUpPage = () => {
-  const { userError, askForAccess } = useLocalStorage();
+  const { userError, askForAccess } = useAuth();
 
   return (
     <div>
       <h1>Sign Up</h1>
-
-      <button onClick={askForAccess}>Create account</button>
-      <h1>{userError}</h1>
+      <form>
+        <button type="button" onClick={askForAccess}>
+          Sign up with GitHub
+        </button>
+        <h5>{userError}</h5>
+      </form>
     </div>
   );
 };

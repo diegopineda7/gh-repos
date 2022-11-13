@@ -1,50 +1,83 @@
 import { useEffect, useState } from 'react';
 import useApi from '../api';
 import { LOGGED_IN_USER_KEY, USERS_LIST_KEY } from '../constants';
-import useLocalStorage from './useLocalStorage';
-import { Repo } from '../interfaces';
+import useAuth from './useAuth';
+import { Repo, User } from '../interfaces';
 
 const useRepos = () => {
   const { useProviders } = useApi();
   const { useReposProviders } = useProviders();
   const { getRepos } = useReposProviders();
-  const { users, currentUser } = useLocalStorage();
+  const { users, currentUser } = useAuth();
   const favorites = currentUser.favorites;
 
   const [repos, setRepos] = useState<Repo[]>([]);
+  const [reposToShow, setReposToShow] = useState<Repo[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
+  const [isFavoritesTab, setIsFavoritesTab] = useState<boolean>(false);
+  const [rerender, setRerender] = useState<boolean>(false);
 
   useEffect(() => {
     handleGetRepos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (isFavoritesTab) {
+      setReposToShow(repos.filter((r) => favorites.includes(r.id)));
+    } else {
+      setReposToShow(repos);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFavoritesTab, rerender]);
+
   const handleGetRepos = async () => {
-    const { data } = await getRepos();
+    const data = await getRepos();
     setRepos(data);
+    setReposToShow(data);
   };
 
-  const markRepoAsFavorite = (repo: Repo) => {
-    let favoritesResult: number[];
+  const handleSearchByName = (name: string) => {
+    setSearchText(name);
+    if (name) {
+      setReposToShow(
+        repos.filter((r) => r.name.toLowerCase().includes(name.toLowerCase()))
+      );
+    } else setReposToShow(repos);
+  };
+
+  const clearSearch = () => {
+    setSearchText('');
+    setIsFavoritesTab(false);
+    setReposToShow(repos);
+  };
+
+  const toggleFavoriteRepo = (repo: Repo) => {
+    let favoritesResult: string[];
     if (favorites.includes(repo.id)) {
-      favoritesResult = favorites.filter((r: number) => r !== repo.id);
+      favoritesResult = favorites.filter((r) => r !== repo.id);
     } else {
       favoritesResult = [...favorites, repo.id];
     }
-    try {
-      const userResult = { ...currentUser, favorites: favoritesResult };
-      const userIdx = users.findIndex((u) => u.id === currentUser.id);
-      const newUsersList = [...users].splice(userIdx, 1, userResult);
-      localStorage.setItem(USERS_LIST_KEY, JSON.stringify(newUsersList));
-      localStorage.setItem(LOGGED_IN_USER_KEY, JSON.stringify(userResult));
-    } catch (e) {
-      console.error(e);
-    }
+    const userResult: User = { ...currentUser, favorites: favoritesResult };
+    const userIdx = users.findIndex((u) => u.login === currentUser.login);
+    const newUsersList = [...users];
+    newUsersList.splice(userIdx, 1, userResult);
+    localStorage.setItem(USERS_LIST_KEY, JSON.stringify(newUsersList));
+    localStorage.setItem(LOGGED_IN_USER_KEY, JSON.stringify(userResult));
+    setRerender(!rerender);
   };
 
   return {
-    repos,
+    allRepos: repos,
+    repos: reposToShow,
     favorites,
-    markRepoAsFavorite,
+    searchText,
+    isFavoritesTab,
+    handleSearchByName,
+    clearSearch,
+    setIsFavoritesTab,
+    toggleFavoriteRepo,
   };
 };
 

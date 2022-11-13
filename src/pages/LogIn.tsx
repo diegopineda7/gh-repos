@@ -1,18 +1,19 @@
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+
+// Components
 import { CustomTextInput } from '../components';
 
 // Hooks
-import useLocalStorage from '../hooks/useLocalStorage';
+import useAuth from '../hooks/useAuth';
 
 export const LogInPage = () => {
-  const { userError, validateUser } = useLocalStorage();
+  const { userError, validateUser } = useAuth();
 
   const validationSchema = Yup.object({
     username: Yup.string()
       .max(15, 'Debe de tener 15 caracteres o menos')
       .required('Requerido'),
-    password: Yup.string().required('Reqiuerido'),
   });
 
   return (
@@ -22,9 +23,7 @@ export const LogInPage = () => {
       <Formik
         initialValues={{
           username: '',
-          password: '',
         }}
-        enableReinitialize
         onSubmit={validateUser}
         validationSchema={validationSchema}
       >
@@ -35,16 +34,11 @@ export const LogInPage = () => {
               name="username"
               placeholder="myuser"
             />
-            <CustomTextInput
-              label="GitHub password"
-              name="password"
-              placeholder="******"
-              type="password"
-            />
+
             <button type="submit" disabled={!isValid || !dirty}>
               Log in
             </button>
-            {userError && <span>{userError}</span>}
+            <h4>{userError}</h4>
           </Form>
         )}
       </Formik>

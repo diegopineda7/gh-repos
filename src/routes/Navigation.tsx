@@ -1,17 +1,34 @@
 import { Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { SignUpPage, ReposPage, LogInPage } from '../pages';
-import logo from '../logo.svg';
+import logo from '../assets/gh-logo.svg';
 
 // Hooks
-import useLocalStorage from '../hooks/useLocalStorage';
+import useAuth from '../hooks/useAuth';
 
 const Navigation = () => {
-  const { isLoggedIn, logOut } = useLocalStorage();
+  const { isLoggedIn, currentUser, logOut } = useAuth();
 
   return (
     <div className="main-layout">
       <nav>
-        <img src={logo} alt="React Logo" />
+        {!isLoggedIn && (
+          <>
+            <img src={logo} alt="React Logo" />
+            <h3>GH Repos</h3>
+          </>
+        )}
+        {isLoggedIn && (
+          <div className="profile">
+            <a href={currentUser.url} target="_blank" rel="noreferrer">
+              <img src={currentUser.avatarUrl} alt={currentUser.name} />
+            </a>
+
+            <>
+              <p>{currentUser.name}</p>
+              <p>@{currentUser.login}</p>
+            </>
+          </div>
+        )}
         <ul>
           {!isLoggedIn && (
             <>
@@ -40,7 +57,7 @@ const Navigation = () => {
                   to="/repos"
                   className={({ isActive }) => (isActive ? 'nav-active' : '')}
                 >
-                  Repos
+                  My repos
                 </NavLink>
               </li>
               <li>
@@ -50,24 +67,25 @@ const Navigation = () => {
           )}
         </ul>
       </nav>
-
-      <Routes>
-        {!isLoggedIn && (
-          <>
-            <Route path="/" element={<SignUpPage />} />
-            <Route path="/login" element={<LogInPage />} />
-          </>
-        )}
-        {isLoggedIn && (
-          <>
-            <Route path="/repos" element={<ReposPage />} />
-          </>
-        )}
-        <Route
-          path="/*"
-          element={<Navigate to={isLoggedIn ? '/repos' : '/'} replace />}
-        />
-      </Routes>
+      <div className="container">
+        <Routes>
+          {!isLoggedIn && (
+            <>
+              <Route path="/" element={<SignUpPage />} />
+              <Route path="/login" element={<LogInPage />} />
+            </>
+          )}
+          {isLoggedIn && (
+            <>
+              <Route path="/repos" element={<ReposPage />} />
+            </>
+          )}
+          <Route
+            path="/*"
+            element={<Navigate to={isLoggedIn ? '/repos' : '/'} replace />}
+          />
+        </Routes>
+      </div>
     </div>
   );
 };
