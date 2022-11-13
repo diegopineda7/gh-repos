@@ -16,31 +16,23 @@ const useLocalStorage = () => {
   const usersList = localStorage.getItem(USERS_LIST_KEY);
   const users: User[] = usersList ? JSON.parse(usersList) : [];
   const currentUser: User = loggedInUser ? JSON.parse(loggedInUser) : {};
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const code = urlParams.get('code');
 
   const { useProviders } = useApi();
   const { useAuthProviders } = useProviders();
   const { getAccessToken, getUserData } = useAuthProviders();
 
   useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const code = urlParams.get('code');
-
-    if (code && !localStorage.getItem(ACCESS_TOKEN_KEY)) {
-      registerUser();
-    }
+    registerUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [code]);
 
   const registerUser = async () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const code = urlParams.get('code');
-
     if (code && !localStorage.getItem(ACCESS_TOKEN_KEY)) {
       const { data } = await getAccessToken({ code });
       if (data.access_token) {
-        localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
         const { data: profileData } = await getUserData({
           token: data.access_token,
         });
@@ -53,6 +45,7 @@ const useLocalStorage = () => {
               ...JSON.parse(usersList),
               { ...profileData, favorites: [] },
             ];
+            localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
             localStorage.setItem(USERS_LIST_KEY, JSON.stringify(newUsersList));
             localStorage.setItem(
               LOGGED_IN_USER_KEY,
