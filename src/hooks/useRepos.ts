@@ -24,9 +24,13 @@ const useRepos = () => {
 
   useEffect(() => {
     if (isFavoritesTab) {
-      setReposToShow(repos.filter((r) => favorites.includes(r.id)));
+      setReposToShow(
+        (searchText ? reposToShow : repos).filter((r) =>
+          favorites.includes(r.id)
+        )
+      );
     } else {
-      setReposToShow(repos);
+      setReposToShow(searchText ? reposToShow : repos);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFavoritesTab, rerender]);
@@ -38,6 +42,7 @@ const useRepos = () => {
   };
 
   const handleSearchByName = (name: string) => {
+    setIsFavoritesTab(false);
     setSearchText(name);
     if (name) {
       setReposToShow(
