@@ -8,19 +8,21 @@ interface Props {
 }
 
 export const CustomTextInput = (props: Props) => {
-  const [field] = useField(props);
-  const { name, label, type, placeholder } = props;
+  const [field, meta] = useField(props);
+  const { name, label, type = 'text', placeholder = '' } = props;
 
   return (
-    <>
+    <div className="text-input-container">
       <label htmlFor={name}>{label}</label>
       <input
-        className="text-input"
-        type={type || 'text'}
+        type={type}
         placeholder={placeholder}
+        className={`text-input ${
+          meta.error && meta.touched ? 'input-error' : ''
+        }`}
         {...field}
       />
       <ErrorMessage name={name} component="span" />
-    </>
+    </div>
   );
 };
