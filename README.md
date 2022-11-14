@@ -2,6 +2,11 @@
 
 Web app to have a list of your favorite GitHub repos.
 
+## Dependency installation
+
+### Client: `yarn install`
+### Server `cd server && yarn install`
+
 ## Available Scripts
 
 In the project directory, you can run:
